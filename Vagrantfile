@@ -44,6 +44,10 @@ Vagrant.configure("2") do |config|
     fi
 
     apt-get -y update
+    apt-get install -y git python python-pip python-dev build-essential
+    pip install --upgrade pip
+    pip install --upgrade virtualenv
+    pip install sphinx sphinx-autobuild
   SHELL
 
 end

@@ -1,3 +1,12 @@
 [submodule "subproj0-rtdocs"]
 	path = subproj0-rtdocs
 	url = https://github.com/akarasulu/subproj0-rtdocs
+[submodule "docs/subproj0"]
+	path = docs/subproj0
+	url = https://github.com/akarasulu/subproj0-rtdocs
+[submodule "docs/subproj1"]
+	path = docs/subproj1
+	url = https://github.com/akarasulu/subproj1-rtdocs
+[submodule "docs/subproj2"]
+	path = docs/subproj2
+	url = https://github.com/akarasulu/subproj2-rtdocs

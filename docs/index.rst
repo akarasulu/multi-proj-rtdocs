@@ -10,6 +10,9 @@ Welcome to acme's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   subproj0/docs/index
+   subproj1/docs/index
+   subproj2/docs/index
 
 
 Indices and tables

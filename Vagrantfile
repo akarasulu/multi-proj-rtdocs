@@ -1,5 +1,11 @@
+
+docs_port = 8000
+
 Vagrant.configure("2") do |config|
-  config.vm.box = "bento/debian-9.3"
+  config.vm.box = "subutai/stretch"
+  
+  config.vm.network "forwarded_port", guest: 8000, host: 8000, 
+    auto_correct: true
 
   config.vm.provision 'shell', 
     env: {
@@ -8,7 +14,7 @@ Vagrant.configure("2") do |config|
       "APPROX_HOST" => ENV['APPROX_HOST'],
       "APPROX_PORT" => ENV['APPROX_PORT']
       }, inline: <<-SHELL
-    
+
     ## Need to make this conditional
     ACNG_URL="http://$ACNG_HOST:$ACNG_PORT"
     APPROX_URL="http://$APPROX_HOST:$APPROX_PORT/debian/"
@@ -32,7 +38,7 @@ Vagrant.configure("2") do |config|
 
     if [ -f "sources.list" ]; then
       rm /etc/apt/sources.list
-      
+
       while read line; do
         if [ -n "$(echo $line | egrep '^#.*')" -o -z "$(echo $line | grep '^deb .*')" ]; then
           continue;
@@ -47,7 +53,16 @@ Vagrant.configure("2") do |config|
     apt-get install -y git python python-pip python-dev build-essential
     pip install --upgrade pip
     pip install --upgrade virtualenv
-    pip install sphinx sphinx-autobuild
+    pip install sphinx sphinx-autobuild recommonmark
+
+    # Before exiting in privileged mode setup iptables and routing
+    # sphinx-autobuild does not listen on all interface just localhost
+    sysctl -w net.ipv4.conf.enp0s8.route_localnet=1
+    iptables -t nat -I PREROUTING -p tcp -d 172.16.0.0/16 --dport 8000 -j DNAT --to-destination 127.0.0.1:8000
   SHELL
 
+  config.vm.provision 'shell', privileged: false, inline: <<-SHELL
+    cd /vagrant/docs;
+    nohup sphinx-autobuild . _build/html vagrant &
+  SHELL
 end
